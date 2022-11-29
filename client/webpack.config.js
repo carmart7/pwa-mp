@@ -1,8 +1,8 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const {GenerateSW} = require('workbox-webpack-plugin');
+// const {GenerateSW} = require('workbox-webpack-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
-
+const {InjectManifest} = require('workbox-webpack-plugin');
 
 module.exports = () => {
   return {
@@ -25,20 +25,28 @@ module.exports = () => {
         template: './index.html',
         title: 'Contact Cards'
       }),
-      new GenerateSW(),
+      new InjectManifest({
+        swSrc: './src/src-sw.js',
+        swDest: 'src-sw.js',
+      }),
       new WebpackPwaManifest({
-        name: 'Contact Card App',
-        short_name: 'Contact Cards',
-        description: 'Make your contact cards here',
+        fingerprints: false,
+        inject: true,
+        name: 'Contact Cards',
+        short_name: 'Contact',
+        description: 'Never forget your contacts!',
+        background_color: '#225ca3',
+        theme_color: '#225ca3',
         start_url: './',
+        publicPath: './',
         icons: [
           {
-            src: path.resolve('./src/images/logo.png'),
+            src: path.resolve('src/images/logo.png'),
             sizes: [96, 128, 192, 256, 384, 512],
-            destination: path.join('assets', 'icons')
-          }
-        ]
-      })
+            destination: path.join('assets', 'icons'),
+          },
+        ],
+      }),
     ],
 
     // TODO: Add the correct modules
